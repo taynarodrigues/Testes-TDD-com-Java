@@ -8,12 +8,13 @@ import br.com.caelum.leilao.dominio.Usuario;
 import br.com.caelum.leilao.servico.Avaliador;
 import static org.junit.Assert.*;
 import org.junit.Assert;
+import org.junit.Ignore;
 
 public class AvaliadorTest {
-	
+	@Ignore
 	@Test
 	public void DeveEntenderLancesEmOrdemCrescente() {
-	//parte 1: montar cenário -> Criando usuário, criando Leilão e propondo lances
+		//parte 1: montar cenário -> Criando usuário, criando Leilão e propondo lances
 		Usuario joao = new Usuario("João");
 		Usuario jose = new Usuario("José");
 		Usuario maria = new Usuario("Maria");
@@ -29,37 +30,80 @@ public class AvaliadorTest {
 		Avaliador leiloeiro = new Avaliador();
 		leiloeiro.avalia(leilao);
 		
-		
-		//parte 3: Validação -> Imprime o resultado que o  método produziu
-		//valores esperados
+		//parte 3: Validação
 		double maiorEsperado = 400;
 		double menorEsperado = 250;
 		
 		
-		Assert.assertEquals(maiorEsperado, leiloeiro.getMaiorLance(), 0.00001);
-		Assert.assertEquals(menorEsperado, leiloeiro.getMenorLance(), 0.00001);
+		Assert.assertEquals(maiorEsperado, leiloeiro.getMaiorLance(), 0.0001);
+		Assert.assertEquals(menorEsperado, leiloeiro.getMenorLance(), 0.0001);
+	}
+	
+	@Ignore
+	@Test
+	public void deveCalcularMedia() {
 		
+		//cenario: 3 lances em ordem crescente
+		Usuario joao = new Usuario("Joao");
+		Usuario jorge = new Usuario("jorge");
+		Usuario mari = new Usuario("mari");
 		
+		Leilao leilao = new Leilao("Playstation 3");
+		
+		leilao.propoe(new Lance(joao,300.0));
+		leilao.propoe(new Lance(jorge,400.0));
+		leilao.propoe(new Lance(mari,500.0));
+		
+		//executando a acao
+		Avaliador leiloeiro = new Avaliador();
+		leiloeiro.avalia(leilao);
+		
+		//comparando a saida com o esperado
+		Assert.assertEquals(400, leiloeiro.getMedia(), 0.0001);
+		
+	}
+	
+	@Ignore
+	@Test
+	public void testaMediaDeZeroLance() {
+		
+		//cenario
+		Usuario ewertom = new Usuario("Ewertom");
+		
+		//acao
+		Leilao leilao = new Leilao("Iphone 7");
+		
+		Avaliador avaliador = new Avaliador();
+		avaliador.avalia(leilao);
+		
+		//validacao
+		assertEquals(0, avaliador.getMedia(), 0.0001);
+	}
+	
+	@Test
+	public void deveEntenderLancesEmOrdemCrescenteComOutrosValores() {
+		
+		//parte 1: cenário
+		Usuario joao = new Usuario("João");
+		Usuario jose = new Usuario("José");
+		Usuario maria = new Usuario("Maria");
+		
+		//ação
+		Leilao leilao = new Leilao("Playstation 3 Novo");
+		
+		leilao.propoe(new Lance(joao, 1000.0));
+		leilao.propoe(new Lance(jose, 2000.0));
+		leilao.propoe(new Lance(maria, 3000.0));
+		
+		//parte 2: ação
+		Avaliador leiloeiro = new Avaliador();
+		leiloeiro.avalia(leilao);
+		
+		//parte 3: validação
+		Assert.assertEquals(3000.0, leiloeiro.getMaiorLance(), 0.00001);
+		Assert.assertEquals(1000.0, leiloeiro.getMenorLance(), 0.00001);
 	}
 }
 
-/*Teste manuais:
- * -Pensar em um cenário
- * -Executar uma ação
- * -Validar a saída
- * 
- * Adicionando JUnit no projeto como biblioteca
- * Botão direito do mouse em cima do projeto
- * Build Path
- * Add Libraries...
- * Selecionar JUnit 
- * Escolher JUnit 4, versão mais recente até o momento desse curso
- * Finish
- * 
- * 
- * O parâmetro com o valor 0.0001 é um delta, como o double tem problema de 
- * arrendondamento, o JUnit irá aceitar esta pequena diferença entre os valores
- * 
- * O pacote correto é o org.junit, e devemos sempre utilizá-lo.
- * O pacote junit.framework é o pacote da versão mais antiga do JUnit, e deve ser evitado.*/
+
 
