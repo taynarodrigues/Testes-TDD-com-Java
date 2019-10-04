@@ -1,4 +1,4 @@
-package br.com.caelum.leilao.teste;
+package br.com.caelum.leilao.servico;
 
 import org.junit.Test;
 
@@ -9,7 +9,7 @@ import br.com.caelum.leilao.servico.Avaliador;
 import static org.junit.Assert.*;
 import org.junit.Assert;
 
-public class TesteDoAvaliador {
+public class AvaliadorTest {
 	
 	@Test
 	public void DeveEntenderLancesEmOrdemCrescente() {
@@ -41,7 +41,7 @@ public class TesteDoAvaliador {
 		
 		
 	}
-	
+}
 
 /*Teste manuais:
  * -Pensar em um cenário
@@ -58,5 +58,8 @@ public class TesteDoAvaliador {
  * 
  * 
  * O parâmetro com o valor 0.0001 é um delta, como o double tem problema de 
- * arrendondamento, o JUnit irá aceitar esta pequena diferença entre os valores*/
-}
+ * arrendondamento, o JUnit irá aceitar esta pequena diferença entre os valores
+ * 
+ * O pacote correto é o org.junit, e devemos sempre utilizá-lo.
+ * O pacote junit.framework é o pacote da versão mais antiga do JUnit, e deve ser evitado.*/
+
