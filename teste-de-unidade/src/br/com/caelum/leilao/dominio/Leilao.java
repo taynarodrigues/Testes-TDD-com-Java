@@ -18,9 +18,14 @@ public class Leilao {
 	
 		int total = qtdDeLancesDo(lance.getUsuario());
 		
-		if(lances.isEmpty() || (!ultimoLanceDado().getUsuario().equals(lance.getUsuario())) && total < 5) {
+		if(lances.isEmpty() || podeDarLance(lance.getUsuario())) {
 			lances.add(lance);
 		}
+	}
+
+	private boolean podeDarLance(Usuario usuario) {
+		
+		return !ultimoLanceDado().getUsuario().equals(usuario) && qtdDeLancesDo(usuario) < 5;
 	}
 
 	private int qtdDeLancesDo(Usuario usuario) {
