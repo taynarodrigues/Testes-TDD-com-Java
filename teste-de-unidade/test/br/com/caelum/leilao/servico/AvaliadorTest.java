@@ -4,35 +4,51 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import br.com.caelum.leilao.builder.CriadorDeLeilao;
 import br.com.caelum.leilao.dominio.Lance;
 import br.com.caelum.leilao.dominio.Leilao;
 import br.com.caelum.leilao.dominio.Usuario;
 
 public class AvaliadorTest {
-	@Ignore
+	
+	private Avaliador leiloeiro;
+	private Usuario joao;
+	private Usuario jose;
+	private Usuario maria;
+
+	@Before
+	public void criaAvaliador() {
+		
+		this.leiloeiro = new Avaliador();
+		System.out.println("inicializando teste!");
+		 this.joao = new Usuario("João");
+		 this.jose = new Usuario("José");
+		 this.maria = new Usuario("Maria");
+	}
+	
+	@After
+	public void finaliza() {
+		System.out.println("fim");
+	}
+
 	@Test
 	public void DeveEntenderLancesEmOrdemCrescente() {
-		//parte 1: montar cenário -> Criando usuário, criando Leilão e propondo lances
-		Usuario joao = new Usuario("João");
-		Usuario jose = new Usuario("José");
-		Usuario maria = new Usuario("Maria");
-		
-		Leilao leilao = new Leilao("Playdtation 3 Novo");
-		
-		leilao.propoe(new Lance(joao, 250.0));
-		leilao.propoe(new Lance(jose, 300.0));
-		leilao.propoe(new Lance(maria, 400.0));
 		
 		
-		//parte 2: Executa uma ação -> Invoca o método avalia
-		Avaliador leiloeiro = new Avaliador();
+		Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+				.lance(joao, 250.0)
+				.lance(maria, 300.0)
+				.lance(jose, 400.0)
+				.constroi();
+		
 		leiloeiro.avalia(leilao);
 		
-		//parte 3: Validação
 		double maiorEsperado = 400;
 		double menorEsperado = 250;
 		
@@ -41,36 +57,26 @@ public class AvaliadorTest {
 		Assert.assertEquals(menorEsperado, leiloeiro.getMenorLance(), 0.0001);
 	}
 	
-	@Ignore
+
 	@Test
 	public void deveCalcularMedia() {
+	
 		
-		//cenario: 3 lances em ordem crescente
-		Usuario joao = new Usuario("Joao");
-		Usuario jorge = new Usuario("jorge");
-		Usuario mari = new Usuario("mari");
+		Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+				.lance(joao, 300.0)
+				.lance(maria, 400.0)
+				.lance(jose, 500.0)
+				.constroi();
 		
-		Leilao leilao = new Leilao("Playstation 3");
-		
-		leilao.propoe(new Lance(joao,300.0));
-		leilao.propoe(new Lance(jorge,400.0));
-		leilao.propoe(new Lance(mari,500.0));
-		
-		//executando a acao
-		Avaliador leiloeiro = new Avaliador();
 		leiloeiro.avalia(leilao);
-		
-		//comparando a saida com o esperado
 		assertEquals(400, leiloeiro.getMedia(), 0.0001);
 		
 	}
 	
-	@Ignore
+
 	@Test
 	public void testaMediaDeZeroLance() {
 		
-		//cenario
-		Usuario ewertom = new Usuario("Ewertom");
 		
 		//acao
 		Leilao leilao = new Leilao("Iphone 7");
@@ -82,19 +88,14 @@ public class AvaliadorTest {
 		assertEquals(0, avaliador.getMedia(), 0.0001);
 	}
 	
-	@Ignore
 	@Test
 	public void deveEntenderLeilaoComApenasUmLance() {
-		//parte 1: montar cenário -> Criando usuário, criando Leilão e propondo lances
-		Usuario joao = new Usuario("João");
 		
-		Leilao leilao = new Leilao("Playstation 3 Novo");
+		Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+				.lance(joao, 1000.0)
+				.constroi();
 		
 		
-		leilao.propoe(new Lance(joao, 1000.0));
-		
-		//parte 2: Executa uma ação -> Invoca o método avalia
-		Avaliador leiloeiro = new Avaliador();
 		leiloeiro.avalia(leilao);
 		
 		assertEquals(1000.0, leiloeiro.getMaiorLance(), 0.00001);
@@ -102,27 +103,23 @@ public class AvaliadorTest {
 		
 	}
 	
-	//Nova Regra: Calcular 3 maiores lances para o Leilão
+	@Ignore
 	@Test
 	public void deveEncontarOsTresMaioresLances() {
-		Usuario joao = new Usuario("Joao");
-		Usuario maria = new Usuario("Maria");
-		Leilao leilao = new Leilao("Playstation 3 Novo");
-		
-		//propor Lances
-		leilao.propoe(new Lance(joao, 100.0));
-		leilao.propoe(new Lance(maria, 200.0));
-		leilao.propoe(new Lance(joao, 300.0));
-		leilao.propoe(new Lance(maria, 400.0));
-		
-		//Criar o leiloeiro 
-		Avaliador leiloeiro = new Avaliador();
-		//e invocar o método avalia, o qual queremos testar
+	
+		Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+				.lance(joao, 1000.0)
+				.lance(maria, 200.0)
+				.lance(joao, 300.0)
+				.lance(maria, 400.0)
+				.constroi();
+	
+
 		leiloeiro.avalia(leilao);
 		
 		List<Lance> maiores = leiloeiro.getTresMaiores();
 		assertEquals(3, maiores.size());
-		//verificar o conteúdo da lista
+
 		assertEquals(400.0, maiores.get(0).getValor(), 0.00001);
 		assertEquals(300.0, maiores.get(1).getValor(), 0.00001);
 		assertEquals(200.0, maiores.get(2).getValor(), 0.00001);
@@ -130,14 +127,13 @@ public class AvaliadorTest {
 	
 	@Test
 	public void deveDevolverTodosLancesCasohajaNoMinimo3() {
-		Usuario joao = new Usuario("Joao");
-		Usuario maria = new Usuario("Maria");
-		Leilao leilao = new Leilao("Playstation 3 Novo ");
+
+		Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo ")
 		
-		 leilao.propoe(new Lance(joao, 100.0));
-	     leilao.propoe(new Lance(maria, 200.0));  
+				.lance(joao, 100.0)
+				.lance(maria, 200.0)
+				.constroi();
 	        
-		Avaliador leiloeiro = new Avaliador();
 		leiloeiro.avalia(leilao);
 		
 		List<Lance>maiores = leiloeiro.getTresMaiores();
@@ -147,12 +143,13 @@ public class AvaliadorTest {
 		assertEquals(100, maiores.get(1).getValor(), 0.00001);
 				
 }
-	
+	@Ignore
 	@Test
     public void deveDevolverListaVaziaCasoNaoHajaLances() {
-        Leilao leilao = new Leilao("Playstation 3 Novo");
+		
+        Leilao leilao = new CriadorDeLeilao().para("Playstation 3 Novo")
+        		.constroi();
 
-        Avaliador leiloeiro = new Avaliador();
         leiloeiro.avalia(leilao);
 
         List<Lance> maiores = leiloeiro.getTresMaiores();
@@ -160,56 +157,67 @@ public class AvaliadorTest {
         assertEquals(0, maiores.size());
     }
 	
-	
+//	@Ignore
 	@Test
 	public void deveEntenderleilaoComLancesEmOrdemRandomica() {
-		Usuario joao = new Usuario("Joao");
-		Usuario maria = new Usuario("Maria");
-		Leilao leilao = new Leilao("Plastation 3 Novo");
-		
-		leilao.propoe(new Lance(joao, 200.0));
-		leilao.propoe(new Lance(maria, 450.0));
-		leilao.propoe(new Lance(joao, 120.0));
-		leilao.propoe(new Lance(maria, 700.0));
-		leilao.propoe(new Lance(joao, 630.0));
-		leilao.propoe(new Lance(maria, 230.0));
-		
-		Avaliador leiloeiro = new Avaliador();
+	
+		Leilao leilao = new CriadorDeLeilao().para("Plastation 3 Novo")
+				
+				.lance(joao, 2000.0)
+				.lance(maria, 450.0)
+				.lance(jose, 120.0)
+				.lance(maria, 700.0)
+				.lance(jose, 630.0)
+				.lance(joao, 230.0)
+				.constroi();
+	
 		leiloeiro.avalia(leilao);
 		
 		assertEquals(700.0, leiloeiro.getMaiorLance(), 0.0001);
 		assertEquals(120.0, leiloeiro.getMenorLance(), 0.0001);
 	}
 	
+	@Ignore
 	@Test
 	public void deveEntenderLeilaoComlancesEmOrdemDecrescente() {
-		Usuario joao = new Usuario("Joao");
-		Usuario maria = new Usuario("Maria");
-		Leilao leilao = new Leilao("Playstation 3 novo");
+
+		Leilao leilao = new CriadorDeLeilao().para("Plastation 3 Novo")
+				
+				.lance(joao, 400.0)
+				.lance(maria, 300.0)
+				.lance(joao, 200.0)
+				.lance(joao, 100.0)
+				.constroi();
 		
-		leilao.propoe(new Lance(joao, 400.0));
-		leilao.propoe(new Lance(maria, 300.0));
-		leilao.propoe(new Lance(joao, 200.0));
-		leilao.propoe(new Lance(maria, 100.0));
-		
-		Avaliador leiloeiro = new Avaliador();
 		leiloeiro.avalia(leilao);
 		
 		assertEquals(400.0, leiloeiro.getMaiorLance(), 0.0001);
 		assertEquals(100.0, leiloeiro.getMenorLance(), 0.0001);
 	}
+	
+	@Test
+	public void naoDeveAceitarMaisDoQue5LancesDeUmMesmoUsuario() {
+		Usuario steveJobs = new Usuario("Steve Jobs");
+		Usuario billGates = new Usuario("Bill Gates");
+		
+		Leilao leilao = new CriadorDeLeilao().para("Macbook Pro 15")
+				.lance(steveJobs, 2000)
+				.lance(billGates, 3000)
+                .lance(steveJobs, 4000)
+                .lance(billGates, 5000)
+                .lance(steveJobs, 6000)
+                .lance(billGates, 7000)
+                .lance(steveJobs, 8000)
+                .lance(billGates, 9000)
+                .lance(steveJobs, 10000)
+                .lance(billGates, 11000)
+                .lance(steveJobs, 12000)
+                .constroi();
+		assertEquals(10, leilao.getLances().size());
+		int ultimo = leilao.getLances().size()-1;
+		assertEquals(11000.0, leilao.getLances().get(ultimo).getValor(), 0.00001);
+	}
 }
 
-/*Testes repetitivos, na área de teste de software,
- * chamamos de equivalência, ou seja,
- * Precisamos de um teste por classe de equivalência.
- * 
- * 
- * O método assertEquals() é estático, e portanto, 
- * podemos importá-lo de maneira estática! 
- * Basta fazer uso do import static! 
- * 
- * DICA DE ATALHO
- * ctrl + F6, para mudar de aba.
- * ctrl + Shift + à letra O* serve para importar o arraylist*/
+
 

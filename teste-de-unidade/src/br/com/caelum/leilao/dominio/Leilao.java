@@ -62,6 +62,13 @@ public class Leilao {
 		}
 		return ultimo;
 	}
+	
+	public void dobrarLance(Usuario usuario) {
+		Lance ultimoLance = ultimoLanceDo(usuario);
+		if(ultimoLance != null) {
+			propoe(new Lance(usuario, ultimoLance.getValor()*2));
+		}
+	}
 
 	
 	
